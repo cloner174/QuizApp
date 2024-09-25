@@ -1,3 +1,7 @@
 Directory Structure.txt
 __pycache__
 database.db
+quiz.db
+static/background.jpg
+static/correct.png
+static/wrong.png
