@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Review Wrong Answers</h2>
+{% for wa in wrong_answers %}
+<div class="card mb-3">
+    <div class="card-header">
+        <strong>Question:</strong> {{ wa['question'] }}
+    </div>
+    <div class="card-body">
+        {% if wa['code_snippet'] %}
+        <pre><code class="language-python">{{ wa['code_snippet'] }}</code></pre>
+        {% endif %}
+        <p><strong>Your Answer:</strong> {{ wa['your_answer'] }}</p>
+        <p><strong>Correct Answer:</strong> {{ wa['correct_answer'] }}</p>
+    </div>
+</div>
+{% endfor %}
+<a href="{{ url_for('leaderboard') }}" class="btn btn-primary">View Leaderboard</a>
+{% endblock %}

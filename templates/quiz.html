@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Python Quiz</h2>
+
+<!-- Progress Bar -->
+<div class="progress mb-4">
+    <div id="quiz-progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>
+
+<form method="POST" action="{{ url_for('quiz') }}" id="quiz-form">
+    {% for question in questions %}
+    <div class="card mb-3">
+        <div class="card-header">
+            Question {{ loop.index }} of {{ questions|length }}
+        </div>
+        <div class="card-body">
+            <p>{{ question['question'] }}</p>
+            {% if question['code_snippet'] %}
+            <pre><code class="language-python">{{ question['code_snippet'] }}</code></pre>
+            {% endif %}
+            {% for option in question['options'] %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="{{ question['id'] }}" id="{{ question['id'] }}{{ loop.index }}" value="{{ option }}" required>
+                <label class="form-check-label" for="{{ question['id'] }}{{ loop.index }}">
+                    {{ option }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Submit Answers</button>
+</form>
+
+<!-- JavaScript for Progress Bar -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const totalQuestions = {{ questions|length }};
+        const progressBar = document.getElementById('quiz-progress');
+        const form = document.getElementById('quiz-form');
+
+        // Initialize progress
+        let answered = 0;
+        const inputs = form.querySelectorAll('input[type="radio"]');
+
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                // Calculate unique answered questions
+                const answeredQuestions = new Set();
+                inputs.forEach(i => {
+                    if (i.checked) {
+                        answeredQuestions.add(i.name);
+                    }
+                });
+                answered = answeredQuestions.size;
+                const progress = Math.round((answered / totalQuestions) * 100);
+                progressBar.style.width = progress + '%';
+                progressBar.setAttribute('aria-valuenow', progress);
+                progressBar.textContent = progress + '%';
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card text-center">
+    <div class="card-header">
+        <h2>Quiz Already Submitted</h2>
+    </div>
+    <div class="card-body">
+        <p>You've already taken the quiz. Thank you for participating!</p>
+        <a href="{{ url_for('leaderboard') }}" class="btn btn-primary">View Leaderboard</a>
+        <a href="{{ url_for('wrong_answers') }}" class="btn btn-warning">Review Wrong Answers</a>
+    </div>
+</div>
+{% endblock %}
