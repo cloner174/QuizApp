@@ -5,8 +5,10 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from config import Config
 from questions_and_answers import questions
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
+
 
 def get_db_connection():
     try:
@@ -17,12 +19,14 @@ def get_db_connection():
         app.logger.error(f'Database connection error: {e}')
         return None
 
+
 def init_db():
     conn = get_db_connection()
     if conn:
         with app.open_resource('schema.sql') as f:
             conn.executescript(f.read().decode('utf8'))
         conn.close()
+
 
 @app.route('/', methods=['GET', 'POST'])
 def quiz_form():
@@ -35,6 +39,7 @@ def quiz_form():
         session['difficulty'] = request.form['difficulty']
         return redirect(url_for('quiz'))
     return render_template('quiz_form.html')
+
 
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():
@@ -51,6 +56,7 @@ def quiz():
     num_questions = min(10, len(filtered_questions))
     session['quiz_questions'] = random.sample(filtered_questions, num_questions)
     return render_template('quiz.html', questions=session['quiz_questions'])
+
 
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
@@ -85,6 +91,7 @@ def submit():
     session['wrong_answers'] = wrong_answers
     return render_template('result.html', score=score, total=session['total'])
 
+
 @app.route('/leaderboard')
 def leaderboard():
     conn = get_db_connection()
@@ -97,24 +104,31 @@ def leaderboard():
         scores = []
     return render_template('leaderboard.html', scores=scores)
 
+
 @app.route('/wrong_answers')
 def wrong_answers():
     if 'wrong_answers' not in session:
         return redirect(url_for('quiz_form'))
     return render_template('wrong_answers.html', wrong_answers=session['wrong_answers'])
 
+
 @app.route('/result_already_submitted')
 def result_already_submitted():
     return render_template('result_already_submitted.html')
+
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error.html', error_code=404, error_message='Page Not Found'), 404
 
+
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('error.html', error_code=500, error_message='Internal Server Error'), 500
 
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
+    
+#cloner174
